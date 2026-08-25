@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard - Resume Screening AI</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body>
+  <div class="page-container">
+    <!-- Header / Navbar -->
+    <header class="app-header">
+      <a href="dashboard.html" class="brand">
+        <div class="brand-icon"><i class="fa-solid fa-brain"></i></div>
+        <div class="brand-title">Resume <span>Screening AI</span></div>
+      </a>
+      <nav class="nav-links">
+        <a href="dashboard.html" class="nav-link active"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+        <a href="upload.html" class="nav-link"><i class="fa-solid fa-cloud-arrow-up"></i> Upload Resume</a>
+        <a href="result.html" class="nav-link"><i class="fa-solid fa-list-check"></i> Candidate Results</a>
+        <a href="jobs.html" class="nav-link"><i class="fa-solid fa-briefcase"></i> Manage Jobs</a>
+      </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+      <!-- Hero Banner -->
+      <section class="hero-banner">
+        <div class="hero-content">
+          <h1 class="hero-title">AI-Powered Resume Screening & Match Analysis</h1>
+          <p class="hero-text">Instantly rank candidates, analyze key skills, and discover top-tier talent using multi-factor AI scoring.</p>
+          <div style="display: flex; gap: 14px;">
+            <a href="upload.html" class="btn btn-primary"><i class="fa-solid fa-upload"></i> Upload Resume</a>
+            <a href="jobs.html" class="btn btn-secondary"><i class="fa-solid fa-plus"></i> Post New Job</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- KPI Metrics Grid -->
+      <section class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fa-solid fa-file-invoice"></i></div>
+          <div class="stat-info">
+            <span class="stat-value" id="statTotalResumes">0</span>
+            <span class="stat-label">Total Resumes Screened</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="color: #34d399; background: rgba(16, 185, 129, 0.15);"><i class="fa-solid fa-bullseye"></i></div>
+          <div class="stat-info">
+            <span class="stat-value" id="statAvgScore">0%</span>
+            <span class="stat-label">Average Match Score</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="color: #fbbf24; background: rgba(245, 158, 11, 0.15);"><i class="fa-solid fa-trophy"></i></div>
+          <div class="stat-info">
+            <span class="stat-value" id="statTopScore">0%</span>
+            <span class="stat-label">Top Candidate Match</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="color: #a78bfa; background: rgba(139, 92, 246, 0.15);"><i class="fa-solid fa-briefcase"></i></div>
+          <div class="stat-info">
+            <span class="stat-value" id="statTotalJobs">0</span>
+            <span class="stat-label">Active Job Roles</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Recent Evaluations Section -->
+      <section class="glass-card">
+        <div class="section-header" style="display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <h2 class="section-title">Recent Candidate Screenings</h2>
+            <p class="section-desc">Latest uploaded candidate resumes and evaluation scores.</p>
+          </div>
+          <a href="result.html" class="btn btn-secondary" style="padding: 8px 16px; font-size: 0.88rem;">View All Results <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+
+        <div style="overflow-x: auto;">
+          <table class="custom-table">
+            <thead>
+              <tr>
+                <th>Candidate Name</th>
+                <th>Job Position</th>
+                <th>Overall Match</th>
+                <th>Skills Match</th>
+                <th>File</th>
+                <th>Uploaded</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="recentEvaluationsBody">
+              <tr>
+                <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 30px;">Loading candidate records...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Detail Modal -->
+  <div id="candidateModal" class="modal-overlay">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+      <div id="modalContent">
+        <!-- Dynamic Content -->
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

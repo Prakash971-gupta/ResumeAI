@@ -1,0 +1,19 @@
+Priya Sharma
+Email: priya.sharma@email.com | Phone: +91-9876543210
+
+EDUCATION
+Bachelor of Technology in Computer Science, VIT Chennai, 2023
+
+EXPERIENCE
+Data Analyst Intern, TechCorp Solutions (2022 - 2023)
+- Used Python, Pandas, and NumPy to clean and analyze large datasets
+- Built dashboards in Power BI to visualize sales trends
+- Wrote complex SQL queries to extract insights from relational databases
+- Automated weekly reports, reducing manual work by 40%
+
+SKILLS
+Python, SQL, Pandas, NumPy, Power BI, Tableau, Excel, Data Cleaning, Statistics
+
+PROJECTS
+- Sales Forecasting Dashboard using Python and Tableau
+- Customer Churn Prediction Model using scikit-learn

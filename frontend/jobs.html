@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manage Jobs - Resume Screening AI</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body>
+  <div class="page-container">
+    <!-- Navigation Header -->
+    <header class="app-header">
+      <a href="dashboard.html" class="brand">
+        <div class="brand-icon"><i class="fa-solid fa-brain"></i></div>
+        <div class="brand-title">Resume <span>Screening AI</span></div>
+      </a>
+      <nav class="nav-links">
+        <a href="dashboard.html" class="nav-link"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+        <a href="upload.html" class="nav-link"><i class="fa-solid fa-cloud-arrow-up"></i> Upload Resume</a>
+        <a href="result.html" class="nav-link"><i class="fa-solid fa-list-check"></i> Candidate Results</a>
+        <a href="jobs.html" class="nav-link active"><i class="fa-solid fa-briefcase"></i> Manage Jobs</a>
+      </nav>
+    </header>
+
+    <main>
+      <div class="section-header" style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px;">
+        <div>
+          <h1 class="section-title">Job Openings & Requirements</h1>
+          <p class="section-desc">Manage position descriptions and skill requirements for automated candidate scoring.</p>
+        </div>
+        <button onclick="openCreateJobModal()" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Post New Job Position</button>
+      </div>
+
+      <!-- Jobs Grid -->
+      <div class="candidate-grid" id="jobsGridContainer">
+        <!-- Dynamic Job Cards -->
+      </div>
+    </main>
+  </div>
+
+  <!-- Create Job Modal -->
+  <div id="jobModal" class="modal-overlay">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeJobModal()">&times;</button>
+      <div class="section-header">
+        <h2 class="section-title"><i class="fa-solid fa-briefcase" style="color: var(--primary);"></i> Add Job Opening</h2>
+        <p class="section-desc">Define position details and required skills to evaluate candidates.</p>
+      </div>
+
+      <form id="createJobForm" onsubmit="handleCreateJob(event)">
+        <div class="form-group">
+          <label class="form-label" for="jobTitleInput">Job Title *</label>
+          <input type="text" id="jobTitleInput" class="form-control" placeholder="e.g. Senior Full Stack Engineer" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="jobDescInput">Description & Summary</label>
+          <textarea id="jobDescInput" class="form-control" rows="3" placeholder="Brief summary of responsibilities and core tech stack..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="jobSkillsInput">Required Core Skills (comma-separated) *</label>
+          <input type="text" id="jobSkillsInput" class="form-control" placeholder="javascript, react, node, sql, git, aws" required />
+          <span style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; display: block;">Separate skills with commas. Synonyms will automatically be evaluated.</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="jobExpInput">Minimum Experience (Years)</label>
+          <input type="number" id="jobExpInput" class="form-control" min="0" max="30" value="2" required />
+        </div>
+
+        <div style="display: flex; gap: 12px; margin-top: 24px;">
+          <button type="submit" class="btn btn-primary" style="flex: 1;"><i class="fa-solid fa-check"></i> Save Job Position</button>
+          <button type="button" class="btn btn-secondary" onclick="closeJobModal()">Cancel</button>
+        </div>
+      </form>
+      <div id="jobModalMessage" class="alert-message" style="display: none;"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

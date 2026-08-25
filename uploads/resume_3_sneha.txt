@@ -1,0 +1,17 @@
+Sneha Reddy
+Email: sneha.reddy@email.com | Phone: +91-9988776655
+
+EDUCATION
+Bachelor of Science in Statistics, Osmania University, 2023
+
+EXPERIENCE
+Junior Data Associate, FinServe Analytics (2023 - Present)
+- Worked with Excel and basic SQL for reporting
+- Assisted senior analysts with data entry and cleaning
+- Learning Python for automation tasks
+
+SKILLS
+Excel, SQL (basic), Statistics, Data Entry, Communication
+
+PROJECTS
+- Built a simple attendance tracker in Excel

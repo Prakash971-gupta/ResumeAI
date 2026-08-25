@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Upload Resume - Resume Screening AI</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body>
+  <div class="page-container">
+    <!-- Navigation Header -->
+    <header class="app-header">
+      <a href="dashboard.html" class="brand">
+        <div class="brand-icon"><i class="fa-solid fa-brain"></i></div>
+        <div class="brand-title">Resume <span>Screening AI</span></div>
+      </a>
+      <nav class="nav-links">
+        <a href="dashboard.html" class="nav-link"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+        <a href="upload.html" class="nav-link active"><i class="fa-solid fa-cloud-arrow-up"></i> Upload Resume</a>
+        <a href="result.html" class="nav-link"><i class="fa-solid fa-list-check"></i> Candidate Results</a>
+        <a href="jobs.html" class="nav-link"><i class="fa-solid fa-briefcase"></i> Manage Jobs</a>
+      </nav>
+    </header>
+
+    <main>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 28px;">
+        <!-- Upload Form Panel -->
+        <section class="glass-card">
+          <div class="section-header">
+            <h2 class="section-title"><i class="fa-solid fa-file-arrow-up" style="color: var(--primary);"></i> Upload Candidate Resume</h2>
+            <p class="section-desc">Upload a PDF, DOCX, or TXT resume to evaluate against job requirements.</p>
+          </div>
+
+          <form id="uploadForm" enctype="multipart/form-data">
+            <div class="form-group">
+              <label class="form-label" for="name">Candidate Full Name *</label>
+              <input type="text" id="name" name="name" class="form-control" placeholder="e.g. Sarah Jenkins" required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="email">Email Address *</label>
+              <input type="email" id="email" name="email" class="form-control" placeholder="sarah.j@example.com" required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="jobId">Target Job Position *</label>
+              <select id="jobId" name="jobId" class="form-select" required onchange="handleJobSelectChange()">
+                <option value="">-- Select Target Job Position --</option>
+              </select>
+            </div>
+
+            <!-- Job Requirements Preview -->
+            <div id="jobPreviewBox" style="display: none; background: rgba(15, 23, 42, 0.6); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border-color); margin-bottom: 20px;">
+              <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px;">
+                Job Requirements Preview
+              </div>
+              <div id="jobPreviewContent"></div>
+            </div>
+
+            <!-- Drag & Drop Zone -->
+            <div class="form-group">
+              <label class="form-label">Resume Document (.pdf, .docx, .txt) *</label>
+              <div class="dropzone" id="dropzone">
+                <div class="dropzone-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+                <div class="dropzone-title">Drag & drop resume file here</div>
+                <div class="dropzone-text">or click to browse from your computer</div>
+                <input type="file" id="resumeFile" name="resumeFile" class="file-input" accept=".pdf,.docx,.doc,.txt,.md" required onchange="handleFileSelected(this)" />
+              </div>
+              <div id="fileSelectedBadge" style="display: none;" class="selected-file-badge">
+                <i class="fa-solid fa-file-contract"></i> <span id="fileNameDisplay">Selected File</span>
+              </div>
+            </div>
+
+            <button type="submit" id="submitBtn" class="btn btn-primary" style="width: 100%; margin-top: 12px; padding: 14px;">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> Screen & Analyze Resume
+            </button>
+          </form>
+
+          <div id="uploadMessage" class="alert-message" style="display: none;"></div>
+        </section>
+
+        <!-- Evaluation Results Preview Card -->
+        <section class="glass-card" id="evaluationPreviewCard" style="display: none; background: linear-gradient(135deg, rgba(18, 24, 38, 0.9), rgba(28, 36, 56, 0.9));">
+          <div class="section-header">
+            <span class="badge badge-success"><i class="fa-solid fa-circle-check"></i> Screening Completed</span>
+            <h2 class="section-title" style="margin-top: 10px;" id="resultCandidateName">Sarah Jenkins</h2>
+            <p class="section-desc" id="resultJobTitle">Software Engineer</p>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 24px; padding: 18px; background: rgba(15, 23, 42, 0.6); border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+            <div class="score-circle-container">
+              <svg class="score-circle-svg" viewBox="0 0 80 80">
+                <circle class="score-circle-bg" cx="40" cy="40" r="35"></circle>
+                <circle class="score-circle-bar" id="resultScoreCircle" cx="40" cy="40" r="35" stroke="var(--primary)"></circle>
+              </svg>
+              <div class="score-number" id="resultScoreNum">0%</div>
+            </div>
+            <div>
+              <div style="font-weight: 700; font-size: 1.1rem;" id="resultRatingText">Strong Candidate</div>
+              <div style="font-size: 0.88rem; color: var(--text-muted);">Overall AI Match Score</div>
+            </div>
+          </div>
+
+          <div class="candidate-details">
+            <div style="margin-bottom: 14px;">
+              <div class="skills-label"><i class="fa-solid fa-circle-check" style="color: var(--success);"></i> Matched Required Skills</div>
+              <div id="resultMatchedSkills"></div>
+            </div>
+
+            <div style="margin-bottom: 14px;">
+              <div class="skills-label"><i class="fa-solid fa-triangle-exclamation" style="color: var(--warning);"></i> Missing Skills Gaps</div>
+              <div id="resultMissingSkills"></div>
+            </div>
+
+            <div style="margin-top: 18px; padding: 14px; background: rgba(99, 102, 241, 0.1); border-radius: var(--radius-md); border: 1px solid var(--primary-glow);">
+              <div style="font-size: 0.82rem; font-weight: 700; color: #a5b4fc; text-transform: uppercase; margin-bottom: 4px;">
+                <i class="fa-solid fa-robot"></i> AI Recommendation Rationale
+              </div>
+              <p style="font-size: 0.9rem; color: var(--text-main);" id="resultSummaryText"></p>
+            </div>
+          </div>
+
+          <div style="margin-top: 24px; display: flex; gap: 12px;">
+            <a href="result.html" class="btn btn-primary" style="flex: 1;"><i class="fa-solid fa-list"></i> View All Results</a>
+            <button onclick="resetUploadForm()" class="btn btn-secondary"><i class="fa-solid fa-rotate-left"></i> New Upload</button>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

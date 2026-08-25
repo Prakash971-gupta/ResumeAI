@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Candidate Screening Results - Resume Screening AI</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body>
+  <div class="page-container">
+    <!-- Header / Navbar -->
+    <header class="app-header">
+      <a href="dashboard.html" class="brand">
+        <div class="brand-icon"><i class="fa-solid fa-brain"></i></div>
+        <div class="brand-title">Resume <span>Screening AI</span></div>
+      </a>
+      <nav class="nav-links">
+        <a href="dashboard.html" class="nav-link"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+        <a href="upload.html" class="nav-link"><i class="fa-solid fa-cloud-arrow-up"></i> Upload Resume</a>
+        <a href="result.html" class="nav-link active"><i class="fa-solid fa-list-check"></i> Candidate Results</a>
+        <a href="jobs.html" class="nav-link"><i class="fa-solid fa-briefcase"></i> Manage Jobs</a>
+      </nav>
+    </header>
+
+    <main>
+      <div class="section-header">
+        <h1 class="section-title">Candidate Screening Directory</h1>
+        <p class="section-desc">Search, filter, and review candidate match evaluations across job openings.</p>
+      </div>
+
+      <!-- Filter & Search Bar -->
+      <section class="filter-bar">
+        <div class="search-box">
+          <i class="fa-solid fa-magnifying-glass search-icon"></i>
+          <input type="text" id="searchInput" class="form-control" placeholder="Search candidate by name, email, or skill..." oninput="handleFilterChange()" />
+        </div>
+
+        <div class="filter-controls">
+          <select id="jobFilter" class="form-select" style="min-width: 200px;" onchange="handleFilterChange()">
+            <option value="">All Job Openings</option>
+          </select>
+
+          <select id="sortFilter" class="form-select" style="min-width: 180px;" onchange="handleFilterChange()">
+            <option value="score_desc">Score: High to Low</option>
+            <option value="score_asc">Score: Low to High</option>
+            <option value="date_desc">Newest First</option>
+            <option value="date_asc">Oldest First</option>
+          </select>
+        </div>
+      </section>
+
+      <!-- Candidate Grid -->
+      <div class="candidate-grid" id="resultsContainer">
+        <!-- Dynamic Candidate Cards -->
+      </div>
+    </main>
+  </div>
+
+  <!-- Detail Breakdown Modal -->
+  <div id="candidateModal" class="modal-overlay">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+      <div id="modalContent">
+        <!-- Content inserted dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
