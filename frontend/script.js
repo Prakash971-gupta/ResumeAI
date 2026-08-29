@@ -571,8 +571,152 @@ async function deleteJob(id) {
   }
 }
 
+// Database Status Checker
+let currentDbStatus = null;
+
+async function checkDatabaseStatus() {
+  const badgeContainer = document.getElementById('dbStatusBadgeContainer');
+  try {
+    const res = await fetch('/api/db-status');
+    if (!res.ok) throw new Error('DB status unreachable');
+    const data = await res.json();
+    currentDbStatus = data;
+
+    if (!badgeContainer) {
+      // If container doesn't exist, inject into app-header if present
+      const header = document.querySelector('.app-header');
+      if (header) {
+        const div = document.createElement('div');
+        div.id = 'dbStatusBadgeContainer';
+        header.appendChild(div);
+        renderDatabaseBadge(div, data);
+      }
+    } else {
+      renderDatabaseBadge(badgeContainer, data);
+    }
+  } catch (err) {
+    if (badgeContainer) {
+      badgeContainer.innerHTML = `
+        <div class="db-status-badge error" title="Database Offline">
+          <span class="status-dot"></span>
+          <span>DB Offline</span>
+        </div>
+      `;
+    }
+  }
+}
+
+function renderDatabaseBadge(container, status) {
+  let badgeClass = 'local';
+  let label = 'Local SQLite';
+  let tooltip = 'Using local SQLite database (resumes.db)';
+
+  if (status.mode === 'external') {
+    badgeClass = 'external';
+    label = `MySQL (${status.host})`;
+    tooltip = `Connected to external database: ${status.host}:${status.port}/${status.database}`;
+  } else if (status.mode === 'local-fallback') {
+    badgeClass = 'degraded';
+    label = 'SQLite (Fallback)';
+    tooltip = status.error ? `External DB failed: ${status.error}. Running on local SQLite fallback.` : 'Running on local SQLite fallback.';
+  }
+
+  container.innerHTML = `
+    <div class="db-status-badge ${badgeClass}" onclick="showDatabaseModal()" title="${tooltip}">
+      <span class="status-dot"></span>
+      <span>${label}</span>
+    </div>
+  `;
+}
+
+function showDatabaseModal() {
+  if (!currentDbStatus) return;
+
+  const modal = document.getElementById('candidateModal') || createGenericModal();
+  const modalContent = document.getElementById('modalContent') || modal.querySelector('.modal-card-content');
+  if (!modal || !modalContent) return;
+
+  const isExternal = currentDbStatus.mode === 'external';
+  const isFallback = currentDbStatus.mode === 'local-fallback';
+
+  modalContent.innerHTML = `
+    <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 16px; margin-bottom: 20px;">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <div class="brand-icon" style="width: 42px; height: 42px; font-size: 1.2rem;">
+          <i class="fa-solid fa-database"></i>
+        </div>
+        <div>
+          <h2 style="font-size: 1.3rem; font-weight: 700;">Database Connection</h2>
+          <p style="font-size: 0.85rem; color: var(--text-muted);">Active database backend details</p>
+        </div>
+      </div>
+      <span class="badge ${isExternal ? 'badge-success' : isFallback ? 'badge-warning' : 'badge-neutral'}">
+        ${isExternal ? 'Connected (External)' : isFallback ? 'Local Fallback Active' : 'Connected (Local)'}
+      </span>
+    </div>
+
+    <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px; margin-bottom: 20px; font-size: 0.9rem;">
+      <div style="display: grid; grid-template-columns: 140px 1fr; gap: 10px; margin-bottom: 8px;">
+        <span style="color: var(--text-muted); font-weight: 600;">Engine:</span>
+        <span style="color: var(--text-main); font-weight: 700;">${currentDbStatus.type.toUpperCase()}</span>
+      </div>
+      <div style="display: grid; grid-template-columns: 140px 1fr; gap: 10px; margin-bottom: 8px;">
+        <span style="color: var(--text-muted); font-weight: 600;">Host:</span>
+        <span style="color: var(--text-main);">${currentDbStatus.host}</span>
+      </div>
+      <div style="display: grid; grid-template-columns: 140px 1fr; gap: 10px; margin-bottom: 8px;">
+        <span style="color: var(--text-muted); font-weight: 600;">Database:</span>
+        <span style="color: var(--text-main);">${currentDbStatus.database}</span>
+      </div>
+      <div style="display: grid; grid-template-columns: 140px 1fr; gap: 10px;">
+        <span style="color: var(--text-muted); font-weight: 600;">Connection Mode:</span>
+        <span style="color: var(--text-main);">${currentDbStatus.mode}</span>
+      </div>
+    </div>
+
+    ${currentDbStatus.error ? `
+      <div class="alert-message alert-error" style="margin-bottom: 20px;">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <div>
+          <strong>External DB Connection Issue:</strong><br/>
+          ${currentDbStatus.error}
+        </div>
+      </div>
+    ` : ''}
+
+    <div style="background: rgba(99, 102, 241, 0.08); border: 1px solid var(--border-highlight); border-radius: var(--radius-md); padding: 16px; margin-bottom: 20px; font-size: 0.88rem; color: var(--text-muted);">
+      <div style="font-weight: 700; color: #a5b4fc; margin-bottom: 6px;"><i class="fa-solid fa-circle-info"></i> How to change database:</div>
+      Edit your <code>.env</code> file in the project root to configure <code>DATABASE_URL</code> or individual <code>DB_HOST</code>, <code>DB_USER</code>, <code>DB_PASSWORD</code>, <code>DB_NAME</code>. Then restart the server.
+    </div>
+
+    <div style="display: flex; justify-content: flex-end;">
+      <button onclick="closeModal()" class="btn btn-secondary">Close</button>
+    </div>
+  `;
+
+  modal.classList.add('active');
+}
+
+function createGenericModal() {
+  let modal = document.getElementById('candidateModal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'candidateModal';
+    modal.className = 'modal-overlay';
+    modal.innerHTML = `
+      <div class="modal-card">
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+        <div id="modalContent"></div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+  }
+  return modal;
+}
+
 // Initializers
 document.addEventListener('DOMContentLoaded', () => {
+  checkDatabaseStatus();
   loadJobs();
   setupDropzone();
 
@@ -597,3 +741,4 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
